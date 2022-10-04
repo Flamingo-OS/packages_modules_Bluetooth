@@ -62,7 +62,7 @@ import java.util.concurrent.TimeoutException;
 public final class BluetoothA2dp implements BluetoothProfile {
     private static final String TAG = "BluetoothA2dp";
     private static final boolean DBG = true;
-    private static final boolean VDBG = false;
+    private static final boolean VDBG = true;
 
     /**
      * Intent used to broadcast the change in connection state of the A2DP

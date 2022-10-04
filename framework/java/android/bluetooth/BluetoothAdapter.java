@@ -3015,7 +3015,7 @@ public final class BluetoothAdapter {
                             recv.awaitResultNoInterrupt(getSyncTimeout()).getValue((long) 0);
 
                     for (int i = 0; i <= BluetoothProfile.MAX_PROFILE_ID; i++) {
-                        if ((supportedProfilesBitMask & (1 << i)) != 0) {
+                        if ((supportedProfilesBitMask & (1L << i)) != 0) {
                             supportedProfiles.add(i);
                         }
                     }
