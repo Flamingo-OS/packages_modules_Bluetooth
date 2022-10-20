@@ -450,7 +450,7 @@ public final class AdvertisingSetParameters implements Parcelable {
          */
         public Builder setTxPowerLevel(int txPowerLevel) {
             String packageName = ActivityThread.currentPackageName();
-            if (packageName.equals("com.android.bluetooth")) {
+            if (packageName != null && packageName.equals("com.android.bluetooth")) {
                 int maxPowerLevel = 20;
                 if (txPowerLevel < TX_POWER_MIN || txPowerLevel > maxPowerLevel) {
                     throw new IllegalArgumentException("invalid txPowerLevel " + txPowerLevel);
