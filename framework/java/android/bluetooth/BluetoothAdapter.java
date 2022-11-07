@@ -3717,6 +3717,93 @@ public final class BluetoothAdapter {
         return ret;
     }
 
+    private void closeCSProfile(BluetoothProfile proxy) {
+        Class<?> csClass = null;
+        Method csClose = null;
+        try {
+            csClass = Class.forName("android.bluetooth.BluetoothCsClient");
+        } catch (ClassNotFoundException ex) {
+            Log.e(TAG, "no CS: exists");
+            csClass = null;
+        }
+        if (csClass != null) {
+            Log.d(TAG, "Able to get CS class handle");
+            try {
+                csClose =  csClass.getDeclaredMethod("close", null);
+            } catch (NoSuchMethodException e) {
+                Log.e(TAG, "no CS:isSupported method exists");
+            }
+            if (csClose != null) {
+                try {
+                   csClose.invoke(proxy, null);
+                } catch(IllegalAccessException e) {
+                   Log.e(TAG, "csClose IllegalAccessException");
+                } catch (InvocationTargetException e) {
+                   Log.e(TAG, "csClose InvocationTargetException");
+                }
+            }
+        }
+        Log.d(TAG, "CloseCSProfile returns");
+    }
+
+    private boolean getCSProfile(Context context, BluetoothProfile.ServiceListener sl) {
+        boolean ret = true;
+        boolean isProfileSupported = false;
+        Class<?> csClass = null;
+        Method csSupported = null;
+        Constructor csCons = null;
+        Object csObj = null;
+
+        Log.d(TAG, "getCSProfile enters");
+        try {
+            csClass = Class.forName("android.bluetooth.BluetoothCsClient");
+        } catch (ClassNotFoundException ex) {
+            Log.e(TAG, "no CS: exists");
+            csClass = null;
+        }
+        if (csClass != null) {
+            Log.d(TAG, "Able to get Cs class handle");
+            try {
+                csSupported =  csClass.getDeclaredMethod("isSupported", null);
+            } catch (NoSuchMethodException e) {
+                Log.e(TAG, "no CS:isSupported method exists: gdm");
+            }
+            try {
+                csCons =
+                  csClass.getDeclaredConstructor(
+                    new Class[]{Context.class,
+                        BluetoothProfile.ServiceListener.class});
+            } catch (NoSuchMethodException ex) {
+                Log.e(TAG, "csCons: NoSuchMethodException: gdm" + ex);
+            }
+        }
+        if (csClass != null && csSupported != null && csCons != null) {
+            try {
+                isProfileSupported = (boolean)csSupported.invoke(null, null);
+            } catch(IllegalAccessException e) {
+                Log.e(TAG, "CS:isSupported IllegalAccessException");
+            } catch (InvocationTargetException e) {
+                Log.e(TAG, "CS:isSupported InvocationTargetException");
+            }
+            if (isProfileSupported) {
+                try {
+                    csObj = csCons.newInstance(
+                                       context, sl);
+                } catch (InstantiationException ex) {
+                    Log.e(TAG, "csCons InstantiationException:" + ex);
+                } catch (IllegalAccessException ex) {
+                    Log.e(TAG, "csCons InstantiationException:" + ex);
+                } catch (InvocationTargetException ex) {
+                    Log.e(TAG, "csCons InvocationTargetException:" + ex);
+                }
+             }
+        }
+        if (csObj == null) {
+            ret = false;
+        }
+        Log.d(TAG, "getCSProfile returns" + ret);
+        return ret;
+    }
     /**
      * Get the profile proxy object associated with the profile.
      *
@@ -3828,6 +3915,8 @@ public final class BluetoothAdapter {
             BluetoothLeBroadcastAssistant leAudioBroadcastAssistant =
                     new BluetoothLeBroadcastAssistant(context, listener);
             return true;
+        } else if (profile == BluetoothProfile.CS_PROFILE) {
+            return getCSProfile(context, listener);
         } else {
             return false;
         }
@@ -3964,6 +4053,9 @@ public final class BluetoothAdapter {
                 BluetoothLeBroadcastAssistant leAudioBroadcastAssistant =
                         (BluetoothLeBroadcastAssistant) proxy;
                 leAudioBroadcastAssistant.close();
+                break;
+	    case BluetoothProfile.CS_PROFILE:
+                closeCSProfile(proxy);
                 break;
         }
     }

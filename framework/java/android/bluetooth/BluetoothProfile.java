@@ -320,13 +320,18 @@ public interface BluetoothProfile {
      */
     int COORDINATED_AUDIO_UNICAST = 38;
 
+   /**
+     * CS_PROFILE
+     * @hide
+     */
+    public static final int CS_PROFILE = 39;
     /**
      * Max profile ID. This value should be updated whenever a new profile is added to match
      * the largest value assigned to a profile.
      *
      * @hide
      */
-    int MAX_PROFILE_ID = 38;
+    int MAX_PROFILE_ID = 39;
 
     /**
      * Default priority for devices that we try to auto-connect to and
