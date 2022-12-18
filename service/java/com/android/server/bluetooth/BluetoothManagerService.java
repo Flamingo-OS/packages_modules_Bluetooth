@@ -2678,7 +2678,7 @@ public class BluetoothManagerService extends IBluetoothManager.Stub {
                     try {
                         pids = (int[]) Class.forName("android.os.Process")
                             .getMethod("getPidsForCommands", String[].class)
-                            .invoke(new String[]{ "com.android.bluetooth" });
+                            .invoke(null, new String[]{ "com.android.bluetooth" });
                     } catch (Exception e) {
                         Log.e(TAG, "Error to call getPidsForCommands");
                     }

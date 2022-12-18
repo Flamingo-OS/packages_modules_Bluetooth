@@ -55,6 +55,7 @@ public final class AdvertiseData implements Parcelable {
     private final Map<ParcelUuid, byte[]> mServiceData;
     private final boolean mIncludeTxPowerLevel;
     private final boolean mIncludeDeviceName;
+    private final boolean mIncludePublicBroadcastDeviceName;
 
     private AdvertiseData(List<ParcelUuid> serviceUuids,
             List<ParcelUuid> serviceSolicitationUuids,
@@ -62,7 +63,8 @@ public final class AdvertiseData implements Parcelable {
             SparseArray<byte[]> manufacturerData,
             Map<ParcelUuid, byte[]> serviceData,
             boolean includeTxPowerLevel,
-            boolean includeDeviceName) {
+            boolean includeDeviceName,
+            boolean includePublicBroadcastDeviceName) {
         mServiceUuids = serviceUuids;
         mServiceSolicitationUuids = serviceSolicitationUuids;
         mTransportDiscoveryData = transportDiscoveryData;
@@ -70,6 +72,7 @@ public final class AdvertiseData implements Parcelable {
         mServiceData = serviceData;
         mIncludeTxPowerLevel = includeTxPowerLevel;
         mIncludeDeviceName = includeDeviceName;
+        mIncludePublicBroadcastDeviceName = includePublicBroadcastDeviceName;
     }
 
     /**
@@ -129,12 +132,20 @@ public final class AdvertiseData implements Parcelable {
     }
 
     /**
+     * Whether the public broadcast device name will be included in the advertisement packet.
+     * @hide
+     */
+    public boolean getIncludePublicBroadcastDeviceName() {
+        return mIncludePublicBroadcastDeviceName;
+    }
+
+    /**
      * @hide
      */
     @Override
     public int hashCode() {
         return Objects.hash(mServiceUuids, mServiceSolicitationUuids, mTransportDiscoveryData,
-                mManufacturerSpecificData, mServiceData, mIncludeDeviceName, mIncludeTxPowerLevel);
+                mManufacturerSpecificData, mServiceData, mIncludeDeviceName, mIncludePublicBroadcastDeviceName, mIncludeTxPowerLevel);
     }
 
     /**
@@ -156,6 +167,7 @@ public final class AdvertiseData implements Parcelable {
                     other.mManufacturerSpecificData)
                 && BluetoothLeUtils.equals(mServiceData, other.mServiceData)
                 && mIncludeDeviceName == other.mIncludeDeviceName
+                && mIncludePublicBroadcastDeviceName == other.mIncludePublicBroadcastDeviceName
                 && mIncludeTxPowerLevel == other.mIncludeTxPowerLevel;
     }
 
@@ -167,7 +179,8 @@ public final class AdvertiseData implements Parcelable {
                 + BluetoothLeUtils.toString(mManufacturerSpecificData) + ", mServiceData="
                 + BluetoothLeUtils.toString(mServiceData)
                 + ", mIncludeTxPowerLevel=" + mIncludeTxPowerLevel + ", mIncludeDeviceName="
-                + mIncludeDeviceName + "]";
+                + mIncludeDeviceName + ", mIncludePublicBroadcastDeviceName="
+                + mIncludePublicBroadcastDeviceName + "]";
     }
 
     @Override
@@ -257,6 +270,7 @@ public final class AdvertiseData implements Parcelable {
         private Map<ParcelUuid, byte[]> mServiceData = new ArrayMap<ParcelUuid, byte[]>();
         private boolean mIncludeTxPowerLevel;
         private boolean mIncludeDeviceName;
+        private boolean mIncludePublicBroadcastDeviceName;
 
         /**
          * Add a service UUID to advertise data.
@@ -363,12 +377,22 @@ public final class AdvertiseData implements Parcelable {
         }
 
         /**
+         * Set whether the public broadcast device name should be included in advertise packet.
+         * @hide
+         */
+        @NonNull
+        public Builder setIncludePublicBroadcastDeviceName(boolean includeDeviceName) {
+            mIncludePublicBroadcastDeviceName = includeDeviceName;
+            return this;
+        }
+
+        /**
          * Build the {@link AdvertiseData}.
          */
         public AdvertiseData build() {
             return new AdvertiseData(mServiceUuids, mServiceSolicitationUuids,
                     mTransportDiscoveryData, mManufacturerSpecificData, mServiceData,
-                    mIncludeTxPowerLevel, mIncludeDeviceName);
+                    mIncludeTxPowerLevel, mIncludeDeviceName, mIncludePublicBroadcastDeviceName);
         }
     }
 }

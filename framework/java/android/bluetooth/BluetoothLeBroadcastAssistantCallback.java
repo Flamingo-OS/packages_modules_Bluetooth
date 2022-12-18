@@ -60,7 +60,7 @@ public class BluetoothLeBroadcastAssistantCallback
                     mIsRegistered = true;
                 } catch (RemoteException e) {
                     Log.w(TAG, "Failed to register broadcast assistant callback");
-                    Log.e(TAG, Log.getStackTraceString(new Throwable()));
+                    Log.e(TAG, Log.getStackTraceString(e));
                 }
             }
         }
@@ -83,7 +83,7 @@ public class BluetoothLeBroadcastAssistantCallback
                     mIsRegistered = false;
                 } catch (RemoteException e) {
                     Log.w(TAG, "Failed to unregister callback with service");
-                    Log.e(TAG, Log.getStackTraceString(new Throwable()));
+                    Log.e(TAG, Log.getStackTraceString(e));
                 }
             }
         }
